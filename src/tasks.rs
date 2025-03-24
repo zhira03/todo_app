@@ -45,3 +45,14 @@ pub fn load_tasks() -> Vec<Task>{
         vec![]
     }
 }
+pub fn delete_task(tasks: &mut Vec<Task>, task_id: u32) -> bool {
+    if let Some(pos) = tasks.iter().position(|task| task.id == task_id) {
+        tasks.remove(pos);
+        if let Err(e) = save_tasks(tasks) {
+            eprintln!("Failed to save tasks after deletion: {}", e);
+        }
+        true
+    } else {
+        false
+    }
+}

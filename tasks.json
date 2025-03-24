@@ -2,6 +2,11 @@
   {
     "id": 1,
     "description": "Finish Rust Project",
+    "completed": false
+  },
+  {
+    "id": 2,
+    "description": "Finish Cooking",
     "completed": true
   }
 ]

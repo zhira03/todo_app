@@ -1,7 +1,7 @@
 mod tasks;
 
 use clap::{Arg, Command};
-use tasks::{Task, save_tasks, load_tasks};
+use tasks::{Task, save_tasks, load_tasks,delete_task};
 
 fn main(){
     let matches = Command::new("To-Do C_L_I App")
@@ -18,6 +18,11 @@ fn main(){
             .arg(Arg::new("id")
                 .required(true)
                 .help("ID of the Task to be Completed")))
+        .subcommand(Command::new("delete")
+            .about("Delete a Task")
+            .arg(Arg::new("id")
+                .required(true)
+                .help("ID of the Task to be Deleted")))
         .get_matches();
 
     let mut tasks = load_tasks();
@@ -33,7 +38,7 @@ fn main(){
             println!("No Tasks Just Yet Bro");
         } else {
             for task in &tasks{
-                let status = if task.completed { "[✔]" } else { "[ ]" };
+                let status = if task.completed { "[✔ ]" } else { "[  ]" };
                 println!("{status} {} - {}", task.id, task.description);
             }
         }
@@ -46,7 +51,16 @@ fn main(){
         } else {
             println!("Task with ID {id} not found");
         }
+    }else if let Some(delete_matches) = matches.subcommand_matches("delete"){
+        if let Ok(id) = delete_matches.get_one::<String>("id").unwrap().parse::<u32>(){
+            if delete_task(&mut tasks, id){
+                println!("Task Deleted: {id}");
+            }else {
+                println!("Task with ID {id} not Found");
+            }
+        }else {
+            println!("Invalid ID format. Bro Enter an Acyual Number init");
+        }
     }
-
 }
 
