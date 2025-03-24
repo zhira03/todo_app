@@ -1,5 +1,5 @@
 mod tasks;
-
+use colored::*;
 use clap::{Arg, Command};
 use tasks::{Task, save_tasks, load_tasks,delete_task};
 
@@ -33,16 +33,24 @@ fn main(){
         tasks.push(Task::new(id, description.clone()));
         save_tasks(&tasks).expect("Failed to save Task");
         println!("Task Added: {description}");
-    }else if matches.subcommand_matches("list").is_some(){
+    }
+    else if matches.subcommand_matches("list").is_some(){
         if tasks.is_empty(){
             println!("No Tasks Just Yet Bro");
         } else {
             for task in &tasks{
-                let status = if task.completed { "[✔ ]" } else { "[  ]" };
-                println!("{status} {} - {}", task.id, task.description);
+                let status = if task.completed { "[✔ ]".green()} else { "[  ]".red() };
+                let description = 
+                if task.completed{
+                    task.description.green().bold()
+                }else{
+                    task.description.red()
+                };
+                println!("{status} {} - {}", task.id, description);
             }
         }
-    }else if let Some(complete_matches) = matches.subcommand_matches("complete") {
+    }
+    else if let Some(complete_matches) = matches.subcommand_matches("complete") {
         let id = complete_matches.get_one::<String>("id").unwrap().parse::<u32>().unwrap();
         if let Some(task) = tasks.iter_mut().find(|task| task.id == id){
             task.completed = true;
@@ -51,7 +59,8 @@ fn main(){
         } else {
             println!("Task with ID {id} not found");
         }
-    }else if let Some(delete_matches) = matches.subcommand_matches("delete"){
+    }
+    else if let Some(delete_matches) = matches.subcommand_matches("delete"){
         if let Ok(id) = delete_matches.get_one::<String>("id").unwrap().parse::<u32>(){
             if delete_task(&mut tasks, id){
                 println!("Task Deleted: {id}");
@@ -59,7 +68,7 @@ fn main(){
                 println!("Task with ID {id} not Found");
             }
         }else {
-            println!("Invalid ID format. Bro Enter an Acyual Number init");
+            println!("Invalid ID format. Bro Can you Enter an Actual Number init");
         }
     }
 }
