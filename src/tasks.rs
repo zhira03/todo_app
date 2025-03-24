@@ -3,6 +3,8 @@ use std::fs::{File, OpenOptions};
 use std::io::{self, Write, Read};
 use std::path::Path;
 
+const FILE_PATH: &str = "tasks.json";
+
 #[derive(Serialize, Deserialize)]
 
 pub struct Task{
